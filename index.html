@@ -636,7 +636,7 @@
     <script>
         // --- CONFIGURATION & STORAGE KEYS ---
         // Get your free access key at https://web3forms.com/ to receive user Name & Email signups in your inbox
-        const WEB3FORMS_ACCESS_KEY = "YOUR_FREE_WEB3FORMS_KEY_HERE";
+        const WEB3FORMS_ACCESS_KEY = "e4aef72d-6a3e-42c5-a45b-5ba83c7cab4f";
         const STORAGE_KEY = 'millat_namaz_bengaluru_v1';
         const PROFILE_STORAGE_KEY = 'millat_user_profile_v1';
         const TIMINGS_STORAGE_KEY = 'millat_cached_timings_v1';
@@ -1442,7 +1442,7 @@
                 updateLocationUI();
 
                 // Optional Web3Forms signup if user entered name/email and configured a real key
-                if (email && WEB3FORMS_ACCESS_KEY && WEB3FORMS_ACCESS_KEY !== "YOUR_FREE_WEB3FORMS_KEY_HERE") {
+                if (email && WEB3FORMS_ACCESS_KEY && WEB3FORMS_ACCESS_KEY !== "e4aef72d-6a3e-42c5-a45b-5ba83c7cab4f") {
                     try {
                         await fetch('https://api.web3forms.com/submit', {
                             method: 'POST',

@@ -1562,5 +1562,18 @@
             }
         });
     </script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const brandText = Array.from(document.querySelectorAll("h1, h2, span, div, a"))
+    .find(el => el.textContent && el.textContent.trim().startsWith("Millat Salah Tracker"));
+  if (brandText && brandText.parentElement) {
+    const logo = document.createElement("img");
+    logo.src = "icon.png";
+    logo.alt = "Millat Salah Tracker Logo";
+    logo.style.cssText = "width:36px;height:36px;border-radius:8px;object-fit:cover;margin-right:10px;flex-shrink:0;";
+    brandText.parentElement.prepend(logo);
+  }
+});
+</script>
 </body>
 </html>

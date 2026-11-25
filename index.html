@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+<link rel="manifest" href="manifest.json">
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -105,11 +112,8 @@
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
             <!-- Brand Logo -->
             <a href="#top" class="flex items-center gap-2.5 sm:gap-3 group min-w-0">
-                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center border border-emerald-400/30 shadow-inner group-hover:scale-105 transition shrink-0">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-amber-300" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/>
-                        <path d="M19 3l.7 1.8L21.5 5.5l-1.8.7L19 8l-.7-1.8-1.8-.7 1.8-.7z"/>
-                    </svg>
+                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center border border-emerald-400/30 shadow-inner group-hover:scale-105 transition shrink-0">
+                    <img src="icon.png" alt="Millat Salah Tracker Logo" class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl object-cover">
                 </div>
                 <div class="truncate">
                     <div class="text-sm sm:text-lg font-extrabold tracking-tight leading-none flex items-center gap-2">
@@ -169,7 +173,7 @@
                 </h1>
 
                 <p class="text-sm sm:text-base text-emerald-100/90 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                    Mark every prayer as <strong>Completed</strong> or <strong>Not Prayed</strong>, monitor your 1-week consistency report, and reach <strong>80% (28/35 prayers)</strong> to unlock a blessed Quranic Ayat & Dua.
+                    Mark every prayer as <strong>Completed</strong> or <strong>Not Prayed</strong>, monitor your consistency report, and reach <strong>80% (28/35 prayers)</strong> to unlock a blessed Quranic Ayat & Dua.
                 </p>
 
                 <div class="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3">
@@ -179,7 +183,7 @@
                     </a>
                     <button type="button" onclick="scrollToReport()" class="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white border border-white/20 font-semibold text-sm transition flex items-center gap-2">
                         <span>📊</span>
-                        <span>View 1-Week Report</span>
+                        <span>View Salah Report</span>
                     </button>
                 </div>
             </div>
@@ -204,7 +208,10 @@
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <div>
-                                <span class="text-xs uppercase tracking-wider text-emerald-200 font-semibold">7-Day Weekly Goal</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs uppercase tracking-wider text-emerald-200 font-semibold">Salah Goal</span>
+                                    <span id="reset-cycle-badge" class="text-[10px] font-bold uppercase tracking-wider bg-white/15 text-amber-200 px-2 py-0.5 rounded-full">Resets Weekly</span>
+                                </div>
                                 <div class="flex items-baseline gap-2 mt-0.5">
                                     <span id="weekly-percentage" class="text-2xl font-extrabold text-white">0%</span>
                                     <span id="weekly-count-text" class="text-xs text-emerald-100">(0 / 35 prayers prayed)</span>
@@ -249,8 +256,8 @@
                 <!-- Helpful Motivational Note -->
                 <div class="bg-emerald-50/90 border border-emerald-200/70 rounded-2xl p-4 flex items-start gap-3 shadow-sm">
                     <span class="text-xl">🌿</span>
-                    <p class="text-xs text-emerald-900 leading-relaxed">
-                        Your progress is saved automatically on your device. Mark each prayer as <strong>Completed</strong> when prayed, or <strong>Not Prayed</strong> if missed. Reach <strong>80% (28 prayers)</strong> in a week to unlock a special Quranic Ayat & Dua!
+                    <p id="tracker-reset-note" class="text-xs text-emerald-900 leading-relaxed">
+                        Your progress is saved automatically on your device and resets <strong>every week</strong>. Mark each prayer as <strong>Completed</strong> when prayed, or <strong>Not Prayed</strong> if missed. Reach <strong>80% (28 prayers)</strong> in a week to unlock a special Quranic Ayat & Dua!
                     </p>
                 </div>
             </section>
@@ -259,10 +266,10 @@
             <section id="view-weekly" class="hidden lg:block lg:col-span-5 space-y-4">
                 <div class="bg-white rounded-3xl p-5 shadow-md border border-slate-100">
                     <div class="flex items-center justify-between mb-1">
-                        <h2 class="text-base font-bold text-slate-800">1-Week Salah Report</h2>
-                        <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">Sun – Sat</span>
+                        <h2 class="text-base font-bold text-slate-800">Salah Consistency Report</h2>
+                        <span id="report-cycle-badge" class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">Weekly Reset</span>
                     </div>
-                    <p class="text-xs text-slate-500 mb-4">Total count of how many times you read Salah this week</p>
+                    <p class="text-xs text-slate-500 mb-4">Total count of how many times you read Salah in your active cycle</p>
 
                     <div class="grid grid-cols-3 gap-2.5 mb-5">
                         <div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-3 text-center">
@@ -301,6 +308,24 @@
                         </thead>
                         <tbody id="weekly-matrix-body" class="text-xs divide-y divide-slate-50"></tbody>
                     </table>
+                </div>
+
+                <!-- Past Cycles Archive Card -->
+                <div class="bg-white rounded-3xl p-5 shadow-md border border-slate-100">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-800">Past Cycles Archive</h3>
+                            <p class="text-[11px] text-slate-500">Saved summaries from previous reset periods</p>
+                        </div>
+                        <button type="button" id="clear-archive-btn" onclick="clearArchiveHistory()" class="hidden text-[11px] font-semibold text-rose-600 hover:text-rose-700 px-2.5 py-1 rounded-lg hover:bg-rose-50 transition">
+                            Clear
+                        </button>
+                    </div>
+                    <div id="cycle-archive-list" class="space-y-2">
+                        <p class="text-xs text-slate-400 text-center py-3">
+                            No past cycles archived yet. Completed periods will appear here automatically after each reset.
+                        </p>
+                    </div>
                 </div>
 
                 <!-- Ayat & Dua Milestone Banner -->
@@ -358,9 +383,9 @@
                 </div>
                 <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
                     <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-2xl mb-4">📊</div>
-                    <h3 class="text-base font-bold text-slate-800">2. 1-Week Attendance Sheet</h3>
+                    <h3 class="text-base font-bold text-slate-800">2. Flexible Reset & Attendance Sheet</h3>
                     <p class="text-xs text-slate-600 mt-2 leading-relaxed">
-                        Review your exact prayer count out of 35 weekly prayers, see per-prayer completion bars, and spot which Salah needs more focus.
+                        Choose whether your tracker resets <strong>every week</strong>, <strong>every month</strong>, or <strong>every year</strong>, keep past cycle summaries, and review per-Salah bars.
                     </p>
                 </div>
                 <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
@@ -428,7 +453,7 @@
                 </div>
                 <div>
                     <h3 class="text-lg font-bold text-slate-800 leading-tight">Your City & App Updates</h3>
-                    <p class="text-xs text-slate-500">Set your location for accurate daily Salah timings</p>
+                    <p class="text-xs text-slate-500">Set your location, reset cycle & optional updates</p>
                 </div>
             </div>
 
@@ -458,20 +483,31 @@
                     </select>
                 </div>
 
-                <!-- Optional Name & Email Collector for Future App Updates -->
+                <!-- Name, Email & Reset Frequency Preference -->
                 <div class="bg-emerald-50/70 border border-emerald-200/70 rounded-2xl p-3.5 space-y-2.5 mt-2">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold text-emerald-900">🔔 Get Future App Updates (Optional)</span>
+                        <span class="text-xs font-bold text-emerald-900">🔔 Personalize Tracker & Updates</span>
                         <span class="text-[10px] font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">Free</span>
                     </div>
                     <p class="text-[11px] text-emerald-800/80 leading-relaxed">
-                        Leave your Name & Email if you'd like to be notified when new features or Play Store releases launch.
+                        Enter your name, choose how often your Salah tracker resets, and optionally add your email for future app updates.
                     </p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <input type="text" id="input-name" placeholder="Your Name (Optional)"
                             class="w-full px-3 py-2 text-xs bg-white border border-emerald-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
                         <input type="email" id="input-email" placeholder="Email ID (Optional)"
                             class="w-full px-3 py-2 text-xs bg-white border border-emerald-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                    <div>
+                        <label for="input-reset-cycle" class="block text-xs font-bold text-emerald-950 mb-1">
+                            How would you like your Salah tracker to reset?
+                        </label>
+                        <select id="input-reset-cycle" name="resetCycle"
+                            class="w-full px-3 py-2 text-xs bg-white border border-emerald-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-800">
+                            <option value="weekly" selected>Every Week (7 days)</option>
+                            <option value="monthly">Every Month</option>
+                            <option value="yearly">Every Year</option>
+                        </select>
                     </div>
                 </div>
 
@@ -640,6 +676,26 @@
         const STORAGE_KEY = 'millat_namaz_bengaluru_v1';
         const PROFILE_STORAGE_KEY = 'millat_user_profile_v1';
         const TIMINGS_STORAGE_KEY = 'millat_cached_timings_v1';
+        const RESET_PERIOD_KEY = 'millat_reset_period_v1';
+        const ARCHIVE_STORAGE_KEY = 'millat_cycle_archive_v1';
+
+        const RESET_CYCLE_LABELS = {
+            weekly: {
+                badge: 'Resets Weekly',
+                reportBadge: 'Weekly Reset',
+                phrase: 'every week'
+            },
+            monthly: {
+                badge: 'Resets Monthly',
+                reportBadge: 'Monthly Reset',
+                phrase: 'every month'
+            },
+            yearly: {
+                badge: 'Resets Yearly',
+                reportBadge: 'Yearly Reset',
+                phrase: 'every year'
+            }
+        };
 
         let deferredInstallPrompt = null;
 
@@ -650,7 +706,8 @@
             timezone: 'Asia/Kolkata',
             qiblaText: '291° WNW',
             name: '',
-            email: ''
+            email: '',
+            resetCycle: 'weekly'
         };
 
         const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -681,6 +738,176 @@
             } catch (e) {
                 // Ignore storage quota / sandbox errors
             }
+        }
+
+        // --- RESET CYCLE, ARCHIVE & PERIOD ROLLOVER HELPERS ---
+        function normalizeResetCycle(cycle) {
+            return ['weekly', 'monthly', 'yearly'].includes(cycle) ? cycle : 'weekly';
+        }
+
+        function getResetPeriodKey(cycle, dateObj = new Date()) {
+            const normCycle = normalizeResetCycle(cycle);
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+
+            if (normCycle === 'yearly') {
+                return `Y-${year}`;
+            }
+            if (normCycle === 'monthly') {
+                return `M-${year}-${month}`;
+            }
+
+            // Weekly cycle starting Sunday (Sun - Sat)
+            const weekStart = new Date(year, dateObj.getMonth(), dateObj.getDate() - dateObj.getDay());
+            const wkYear = weekStart.getFullYear();
+            const wkMonth = String(weekStart.getMonth() + 1).padStart(2, '0');
+            const wkDay = String(weekStart.getDate()).padStart(2, '0');
+            return `W-${wkYear}-${wkMonth}-${wkDay}`;
+        }
+
+        function formatPeriodDisplayLabel(periodKey, cycle) {
+            const normCycle = normalizeResetCycle(cycle);
+            if (!periodKey) return 'Previous Period';
+            if (normCycle === 'yearly' || periodKey.startsWith('Y-')) {
+                const yr = periodKey.replace(/^Y-/, '');
+                return `Year ${yr}`;
+            }
+            if (normCycle === 'monthly' || periodKey.startsWith('M-')) {
+                const parts = periodKey.replace(/^M-/, '').split('-');
+                const yr = parseInt(parts[0], 10);
+                const mo = (parseInt(parts[1], 10) || 1) - 1;
+                const d = new Date(yr || 2026, mo, 1);
+                return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+            }
+            const parts = periodKey.replace(/^W-/, '').split('-');
+            const yr = parseInt(parts[0], 10);
+            const mo = (parseInt(parts[1], 10) || 1) - 1;
+            const dy = parseInt(parts[2], 10) || 1;
+            const d = new Date(yr || 2026, mo, dy);
+            return `Week of ${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+        }
+
+        function loadCycleArchive() {
+            const raw = safeGetItem(ARCHIVE_STORAGE_KEY);
+            if (!raw) return [];
+            try {
+                const parsed = JSON.parse(raw);
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveCycleArchive(entries) {
+            safeSetItem(ARCHIVE_STORAGE_KEY, JSON.stringify(entries.slice(0, 12)));
+        }
+
+        function archiveCurrentDataSnapshot(periodKey, cycle, dataObj) {
+            let completed = 0;
+            let missed = 0;
+            for (let d = 0; d < 7; d++) {
+                for (const p of PRAYERS) {
+                    const st = dataObj?.[d]?.[p.id];
+                    if (st === 'completed') completed++;
+                    else if (st === 'missed') missed++;
+                }
+            }
+            if (completed === 0 && missed === 0) return;
+
+            const pct = Math.round((completed / 35) * 100);
+            const entry = {
+                id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+                periodKey: periodKey || '',
+                label: formatPeriodDisplayLabel(periodKey, cycle),
+                cycle: normalizeResetCycle(cycle),
+                completed,
+                missed,
+                pct,
+                city: activeLocation.city || 'Bengaluru'
+            };
+
+            const existing = loadCycleArchive();
+            existing.unshift(entry);
+            saveCycleArchive(existing);
+        }
+
+        function clearArchiveHistory() {
+            saveCycleArchive([]);
+            renderCycleArchive();
+            showToast('🗑️', 'Past cycles archive cleared');
+        }
+
+        function renderCycleArchive() {
+            const listEl = document.getElementById('cycle-archive-list');
+            const clearBtn = document.getElementById('clear-archive-btn');
+            if (!listEl) return;
+
+            const entries = loadCycleArchive();
+            if (clearBtn) {
+                if (entries.length > 0) clearBtn.classList.remove('hidden');
+                else clearBtn.classList.add('hidden');
+            }
+
+            if (entries.length === 0) {
+                listEl.innerHTML = `<p class="text-xs text-slate-400 text-center py-3">No past cycles archived yet. Completed periods will appear here automatically after each reset.</p>`;
+                return;
+            }
+
+            listEl.innerHTML = entries.map(item => `
+                <div class="flex items-center justify-between gap-2 bg-slate-50 border border-slate-100 rounded-2xl px-3.5 py-2.5">
+                    <div class="min-w-0">
+                        <div class="text-xs font-bold text-slate-800 truncate">${item.label}</div>
+                        <div class="text-[10px] text-slate-500 capitalize">${item.cycle} cycle • ${item.city}</div>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <div class="text-xs font-extrabold text-emerald-700">${item.completed} / 35 (${item.pct}%)</div>
+                        <div class="text-[10px] text-rose-500 font-medium">${item.missed} missed</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateResetCycleUI() {
+            const normCycle = normalizeResetCycle(activeLocation.resetCycle);
+            const meta = RESET_CYCLE_LABELS[normCycle];
+
+            const heroBadge = document.getElementById('reset-cycle-badge');
+            const reportBadge = document.getElementById('report-cycle-badge');
+            const noteEl = document.getElementById('tracker-reset-note');
+
+            if (heroBadge) heroBadge.textContent = meta.badge;
+            if (reportBadge) reportBadge.textContent = meta.reportBadge;
+            if (noteEl) {
+                noteEl.innerHTML = `Your progress is saved automatically on your device and resets <strong>${meta.phrase}</strong>. Mark each prayer as <strong>Completed</strong> when prayed, or <strong>Not Prayed</strong> if missed. Reach <strong>80% (28 prayers)</strong> in a week to unlock a special Quranic Ayat & Dua!`;
+            }
+        }
+
+        function applyScheduledResetCheck({ showNotice = false } = {}) {
+            const normCycle = normalizeResetCycle(activeLocation.resetCycle);
+            const localNow = getSafeLocalDate(activeLocation.timezone);
+            const currentPeriod = getResetPeriodKey(normCycle, localNow);
+            const lastPeriod = safeGetItem(RESET_PERIOD_KEY);
+
+            if (!lastPeriod) {
+                safeSetItem(RESET_PERIOD_KEY, currentPeriod);
+                return false;
+            }
+
+            if (lastPeriod !== currentPeriod) {
+                archiveCurrentDataSnapshot(lastPeriod, normCycle, weekData);
+                weekData = getEmptyWeekData();
+                saveWeekData();
+                safeSetItem(RESET_PERIOD_KEY, currentPeriod);
+                hasCelebratedThisSession = false;
+                renderCycleArchive();
+                if (showNotice) {
+                    const label = RESET_CYCLE_LABELS[normCycle].phrase;
+                    showToast('🔄', `Past cycle saved & tracker reset for ${label}`);
+                }
+                return true;
+            }
+
+            return false;
         }
 
         // --- QIBLA BEARING CALCULATOR ---
@@ -897,6 +1124,7 @@
                     ? `Assalamu Alaikum, ${activeLocation.name}`
                     : 'Global Salah & Weekly Companion';
             }
+            updateResetCycleUI();
         }
 
         // --- TRACKER STATE & STORAGE ---
@@ -1204,6 +1432,8 @@
             renderDailyView();
             renderWeeklyReport();
             renderScheduleCards();
+            renderCycleArchive();
+            updateResetCycleUI();
         }
 
         // --- NAVIGATION & MODALS ---
@@ -1261,6 +1491,7 @@
             const methodSelect = document.getElementById('input-method');
             const nameInput = document.getElementById('input-name');
             const emailInput = document.getElementById('input-email');
+            const resetCycleSelect = document.getElementById('input-reset-cycle');
             const statusMsg = document.getElementById('location-status-msg');
 
             if (cityInput) cityInput.value = activeLocation.city || '';
@@ -1268,6 +1499,7 @@
             if (methodSelect) methodSelect.value = activeLocation.method || '1';
             if (nameInput) nameInput.value = activeLocation.name || '';
             if (emailInput) emailInput.value = activeLocation.email || '';
+            if (resetCycleSelect) resetCycleSelect.value = normalizeResetCycle(activeLocation.resetCycle);
             if (statusMsg) statusMsg.classList.add('hidden');
 
             if (modal) {
@@ -1348,6 +1580,9 @@
         }
 
         function simulateWeek(targetCompleted) {
+            const currentPeriod = safeGetItem(RESET_PERIOD_KEY) || getResetPeriodKey(activeLocation.resetCycle);
+            archiveCurrentDataSnapshot(currentPeriod, activeLocation.resetCycle, weekData);
+
             const fresh = getEmptyWeekData();
             let count = 0;
             for (let d = 0; d < 7; d++) {
@@ -1409,6 +1644,7 @@
                 const method = document.getElementById('input-method')?.value || '1';
                 const name = (document.getElementById('input-name')?.value || '').trim();
                 const email = (document.getElementById('input-email')?.value || '').trim();
+                const resetCycle = normalizeResetCycle(document.getElementById('input-reset-cycle')?.value || 'weekly');
 
                 const statusMsg = document.getElementById('location-status-msg');
                 const saveBtn = document.getElementById('save-location-btn');
@@ -1424,22 +1660,36 @@
                     statusMsg.className = 'text-xs font-semibold text-center text-emerald-700 block';
                 }
 
+                const cycleChanged = normalizeResetCycle(activeLocation.resetCycle) !== resetCycle;
+
                 activeLocation.city = city;
                 activeLocation.country = country;
                 activeLocation.method = method;
                 activeLocation.name = name;
                 activeLocation.email = email;
+                activeLocation.resetCycle = resetCycle;
 
                 safeSetItem(PROFILE_STORAGE_KEY, JSON.stringify({
                     city,
                     country,
                     method,
                     name,
-                    email
+                    email,
+                    resetCycle
                 }));
 
+                const localNow = getSafeLocalDate(activeLocation.timezone);
+                const newPeriodKey = getResetPeriodKey(resetCycle, localNow);
+                if (cycleChanged) {
+                    safeSetItem(RESET_PERIOD_KEY, newPeriodKey);
+                } else if (!safeGetItem(RESET_PERIOD_KEY)) {
+                    safeSetItem(RESET_PERIOD_KEY, newPeriodKey);
+                }
+
                 const fetched = await fetchCityTimings(city, country, method);
+                applyScheduledResetCheck({ showNotice: false });
                 updateLocationUI();
+                renderAll();
 
                 // Optional Web3Forms signup if user entered name/email and configured a real key
                 if (email && WEB3FORMS_ACCESS_KEY && WEB3FORMS_ACCESS_KEY !== "e4aef72d-6a3e-42c5-a45b-5ba83c7cab4f") {
@@ -1453,7 +1703,8 @@
                                 name: name || 'Anonymous',
                                 email,
                                 city,
-                                country
+                                country,
+                                reset_cycle: resetCycle
                             })
                         });
                     } catch (err) {
@@ -1467,9 +1718,9 @@
                 }
 
                 if (fetched) {
-                    showToast('🌍', `Updated to ${city}, ${country}`);
+                    showToast('🌍', `Updated to ${city}, ${country} (${RESET_CYCLE_LABELS[resetCycle].badge})`);
                 } else {
-                    showToast('📍', `Saved ${city}, ${country} (offline/default schedule)`);
+                    showToast('📍', `Saved ${city}, ${country} • ${RESET_CYCLE_LABELS[resetCycle].badge}`);
                 }
 
                 closeLocationModal();
@@ -1541,15 +1792,22 @@
                         hasSavedProfile = true;
                     }
                     if (prof.email) activeLocation.email = prof.email;
+                    if (prof.resetCycle) {
+                        activeLocation.resetCycle = normalizeResetCycle(prof.resetCycle);
+                    }
                 } catch (e) {
                     // Ignore malformed profile
                 }
             }
 
+            applyScheduledResetCheck({ showNotice: true });
             updateLocationUI();
             renderAll();
             updateLiveClock();
-            setInterval(updateLiveClock, 1000);
+            setInterval(() => {
+                updateLiveClock();
+                applyScheduledResetCheck({ showNotice: true });
+            }, 1000);
 
             // Refresh timings in background if online
             fetchCityTimings(activeLocation.city, activeLocation.country, activeLocation.method);
@@ -1562,18 +1820,5 @@
             }
         });
     </script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const brandText = Array.from(document.querySelectorAll("h1, h2, span, div, a"))
-    .find(el => el.textContent && el.textContent.trim().startsWith("Millat Salah Tracker"));
-  if (brandText && brandText.parentElement) {
-    const logo = document.createElement("img");
-    logo.src = "icon.png";
-    logo.alt = "Millat Salah Tracker Logo";
-    logo.style.cssText = "width:36px;height:36px;border-radius:8px;object-fit:cover;margin-right:10px;flex-shrink:0;";
-    brandText.parentElement.prepend(logo);
-  }
-});
-</script>
 </body>
 </html>
